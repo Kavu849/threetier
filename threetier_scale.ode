@@ -1,0 +1,52 @@
+#Three-tiered chlorophenol mineralisation motif
+#Rescaled system according to Wade et al., J. Theor. Biol., 2016
+
+# Define the scaled parameters
+alpha=D/(km0*Y0)
+uf=s0in/KS0
+om0=(KS0/KS1)*(224/208)*(1-Y0)
+om1=(KS1/KS2)*(32/224)*(1-Y1)
+om2=(16/208)*(KS0/KS2)
+phi1=km1*Y1/(km0*Y0)
+phi2=km2*Y2/(km0*Y0)
+Kp=L0/KS2
+KI2=KS2/KI
+ka=a0/(km0*Y0)
+kb=ka
+kc=ka
+
+# Define the growth functions
+mu0=(s0/(1+s0))*(s2/(Kp+s2))
+mu1=(phi1*s1/(1+s1))*(1/(1+KI2*s2))
+mu2=phi2*s2/(1+s2)
+
+# Define the system of ODEs
+ds0/dt=alpha*(uf-s0)-mu0*x0
+dx0/dt=-alpha*x0+mu0*x0-ka*x0
+ds1/dt=-alpha*s1+om0*mu0*x0-mu1*x1
+dx1/dt=-alpha*x1+mu1*x1-kb*x1
+ds2/dt=-alpha*s2+om1*mu1*x1-om2*mu0*x0-mu2*x2
+dx2/dt=-alpha*x2+mu2*x2-kc*x2
+
+# Parameters
+par D=0.01, s0in=0.2
+par Y0=0.019,Y1=0.04,Y2=0.06
+par km0=29, km1=26, km2=35
+par KS0=0.053, KS1=0.302, KS2=2.5e-5, L0=1e-6, KI=3.5e-6
+par a0=0.02, a1=0.02, a2=0.02
+
+# Defining initial conditions (not necessary)
+init s0=0.0777
+init x0=0.0692
+init s1=0.0969
+init x1=5E-2
+init s2=1E-5
+init x2=1E-5
+
+# Options
+@ METH=stiff, tol=1e-9, bound=10000
+@ maxstor=100000,xlo=0,ylo=0,xhi=1000,yhi=3
+@ xp=t,yp=x0,total=1000,dt=.001
+
+
+done

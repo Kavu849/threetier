@@ -1,0 +1,37 @@
+# file szymon_3D.ode
+#
+#par a=0.1,uf=2,ug=2,uh=2,w0=.5,w1=.5,w2=.5,Kp=.1,Ks=.1,phi1=1,phi2=1,x2=0
+par a=0.1,uf=2,ug=0,uh=0,w0=.75,w1=1.0,w2=.5,Kp=.1,Ks=.1,phi1=1,phi2=1,x2=0
+
+mu0(x0,x1)=((uf-x0)/(1+uf-x0))*((-w2*x2+w0*w1*uf+w1*ug+uh-w2*x0-2*x2-w0*w1*(w0*uf+ug-x1-w0*(uf-x2)))/(Kp+(-w2*x2+w0*w1*uf+w1*ug+uh-w2*x0-2*x2-w0*w1*(w0*uf+ug-x1-w0*(uf-x2)))))
+
+mu1(x0,x1)=phi1*((w0*uf+ug-x1-w0*(uf-x0))/(1+(w0*uf+ug-x1-w0*(uf-x0))))*(1/(1+Ks*(-w2*x2+w0*w1*uf+w1*ug+uh-w2*x0-2*x2-w0*w1*(w0*uf+ug-x1-w0*(uf-x2)))))
+
+# mu2(x0,x1,x2)=phi2*(w0*w1*uf+w1*ug+uh-w2*x0-2*x2-w0*w1*((w0*uf+ug-x1-w0*(uf-x2))-w2*x2))/(1+(w0*w1*uf+w1*ug+uh-w2*x0-2*x2-w0*w1*((w0*uf+ug-x1-w0*(uf-x2))-w2*x2)))
+
+init x0=.1
+init x1=0.1
+#init x2=0.1
+
+
+# s0=uf-x0
+# s1=w0*uf+ug-x1-w0*(uf-x0)
+# s2=w0*w1*uf+w1*ug+uh-w2*x0-2*x2-w0*w1((w0*uf+ug-x1-w0*(uf-x2))-w2*x2
+# s2=-w2*x0+w1*x1-x2+uh (this is the right formula for s2)
+dx0/dt=x0*(-a+mu0(x0,x1))
+dx1/dt=x1*(-a+mu1(x0,x1))
+#dx2/dt=x2*(-a+mu2(x0,x1,x2))
+aux  ss0=uf-x0
+# aux ss1=w0*uf+ug-x1-w0*(uf-x0)
+aux  ss1=ug-x1+w0*x0
+aux  ss2=uh-w2*x0-x2+w1*x1
+aux b1=w0*t+ug
+aux b2=t*w2/w1-uh/w1
+
+
+@ maxstor=100000,xlo=0,ylo=0,xhi=2,yhi=2
+@ xp=x0,yp=x1,zp=t,total=2,dt=.001,nmesh=500
+@ autoxmin=0,autoxmax=2,autoymin=0,autoymax=1.2,autovar=x
+@ ds=0.01,dsmin=1e-05,dsmax=.05,npr=10,ntst=30,epss=1e-07,
+@ epsl=1e-07,epsu=1e-07
+done
